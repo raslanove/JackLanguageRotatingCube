@@ -820,11 +820,63 @@ pop argument 0
 goto WHILE_EXP1
 label WHILE_END1
 push argument 0
-push constant 269
-gt
+push constant 90
+lt
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
+push argument 1
+push constant 0
+push argument 0
+push static 0
+add
+pop pointer 1
+push that 0
+call Int32.set 3
+pop temp 0
+goto IF_END0
+label IF_FALSE0
+push argument 0
+push constant 180
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push argument 1
+push constant 0
+push constant 180
+push argument 0
+sub
+push static 0
+add
+pop pointer 1
+push that 0
+call Int32.set 3
+pop temp 0
+goto IF_END1
+label IF_FALSE1
+push argument 0
+push constant 270
+lt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push argument 1
+push constant 0
+push argument 0
+push constant 180
+sub
+push static 0
+add
+pop pointer 1
+push that 0
+call Int32.set 3
+pop temp 0
+push argument 1
+call Int32.negate 1
+pop temp 0
+goto IF_END2
+label IF_FALSE2
 push argument 1
 push constant 0
 push constant 360
@@ -838,58 +890,6 @@ call Int32.set 3
 pop temp 0
 push argument 1
 call Int32.negate 1
-pop temp 0
-goto IF_END0
-label IF_FALSE0
-push argument 0
-push constant 179
-gt
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push argument 1
-push constant 0
-push argument 0
-push constant 180
-sub
-push static 0
-add
-pop pointer 1
-push that 0
-call Int32.set 3
-pop temp 0
-push argument 1
-call Int32.negate 1
-pop temp 0
-goto IF_END1
-label IF_FALSE1
-push argument 0
-push constant 89
-gt
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push argument 1
-push constant 0
-push constant 180
-push argument 0
-sub
-push static 0
-add
-pop pointer 1
-push that 0
-call Int32.set 3
-pop temp 0
-goto IF_END2
-label IF_FALSE2
-push argument 1
-push constant 0
-push argument 0
-push static 0
-add
-pop pointer 1
-push that 0
-call Int32.set 3
 pop temp 0
 label IF_END2
 label IF_END1

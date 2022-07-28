@@ -1,9 +1,12 @@
 class Main {
     function void main() {
         var Int32 rotatingPointX, rotatingPointY, cosAngle, sinAngle;
-        var int angle;
+        var int angle, effectiveAngle, basicAngle, xAngle, yAngle;
+        var boolean negateX, negateY;
         
+        do Int32.initialize();
         do MathF.initialize();
+        
         let rotatingPointX = Int32.new(0, 0);
         let rotatingPointY = Int32.new(0, 0);
         let cosAngle = Int32.new(0, 0);
@@ -15,19 +18,60 @@ class Main {
         //do Output.println();        
         //do val1.print();
 
-        while (angle < 360) {
-            do MathF.cos(angle, cosAngle);
-            do MathF.sin(angle, sinAngle);
+        while (angle < 18000) {
+        
+            let effectiveAngle = angle;
+            while (effectiveAngle > 359) {
+                let effectiveAngle = effectiveAngle - 360;
+            }
+                
+            let basicAngle = effectiveAngle;
+            while (basicAngle > 89) {
+                let basicAngle = basicAngle - 90;
+            }
+
+            if (effectiveAngle > 269) {
+                let xAngle = 90 - basicAngle;
+                let yAngle = 90 - basicAngle;
+                let negateX = false;
+                let negateY = true;                
+            } else { 
+                if (effectiveAngle > 179) {
+                    let xAngle = basicAngle;
+                    let yAngle = basicAngle;
+                    let negateX = true;
+                    let negateY = true;                
+                } else {
+                    if (effectiveAngle > 89) {                        
+                        let xAngle = 90 - basicAngle;
+                        let yAngle = 90 - basicAngle;
+                        let negateX = true;
+                        let negateY = false;
+                    } else {
+                        let xAngle = basicAngle;
+                        let yAngle = basicAngle;
+                        let negateX = false;
+                        let negateY = false;                        
+                    }                    
+                }
+            }
+
+            do MathF.cos(xAngle, cosAngle);
+            do MathF.sin(yAngle, sinAngle);
             
             // x*cos(Angle) - y*sin(Angle)
             do rotatingPointX.set(0, 127);
-            do rotatingPointX.multiply(cosAngle);
-            //do rotatingPointX.multiplyInt(cosAngle.getLower());
+            //do rotatingPointX.multiply(cosAngle);
+            do rotatingPointX.multiplyInt(cosAngle.getLower());
             
             // y*cos(Angle) + x*sin(Angle)
             do rotatingPointY.set(0, 127);
-            do rotatingPointY.multiply(sinAngle);
-            //do rotatingPointY.multiplyInt(sinAngle.getLower());
+            //do rotatingPointY.multiply(sinAngle);
+            do rotatingPointY.multiplyInt(sinAngle.getLower());
+
+            if (negateX) { do rotatingPointX.negate(); }
+            if (negateY) { do rotatingPointY.negate(); }
+
         
             do Screen.setColor(true);
             do Screen.drawLine(255, 127, 255+rotatingPointX.getUpper(), 127+rotatingPointY.getUpper());

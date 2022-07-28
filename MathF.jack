@@ -104,21 +104,20 @@ class MathF {
         }
         while (angleDegrees < 0) {
             let angleDegrees = angleDegrees + 360;
-        }
- 
+        } 
 
-        if (angleDegrees > 269) {
-            do outValue.set(0, sinLookupTable[360 - angleDegrees]);
-            do outValue.negate();
-        } else { 
-            if (angleDegrees > 179) {
-                do outValue.set(0, sinLookupTable[angleDegrees-180]);
-                do outValue.negate();                
+        if (angleDegrees < 90) {
+            do outValue.set(0, sinLookupTable[angleDegrees]);
+        } else {
+            if (angleDegrees < 180) {
+                do outValue.set(0, sinLookupTable[180-angleDegrees]);
             } else {
-                if (angleDegrees > 89) {
-                    do outValue.set(0, sinLookupTable[180-angleDegrees]);
+                if (angleDegrees < 270) {
+                    do outValue.set(0, sinLookupTable[angleDegrees-180]);
+                    do outValue.negate();                
                 } else {
-                    do outValue.set(0, sinLookupTable[angleDegrees]);                
+                    do outValue.set(0, sinLookupTable[360 - angleDegrees]);
+                    do outValue.negate();
                 }
             }
         }

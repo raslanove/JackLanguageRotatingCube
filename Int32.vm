@@ -1,42 +1,31 @@
 function Int32.new 0
-push constant 4
+push constant 2
 call Memory.alloc 1
 pop pointer 0
 push argument 0
 pop this 0
 push argument 1
 pop this 1
-push constant 0
-pop this 2
-push constant 0
-pop this 3
 push pointer 0
+return
+function Int32.initialize 0
+push constant 32767
+push constant 1
+add
+pop static 2
+push constant 0
+push constant 0
+call Int32.new 2
+pop static 0
+push constant 0
+push constant 0
+call Int32.new 2
+pop static 1
+push constant 0
 return
 function Int32.dispose 0
 push argument 0
 pop pointer 0
-push this 2
-push constant 0
-eq
-not
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push this 2
-call Int32.dispose 1
-pop temp 0
-label IF_FALSE0
-push this 3
-push constant 0
-eq
-not
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push this 3
-call Int32.dispose 1
-pop temp 0
-label IF_FALSE1
 push pointer 0
 call Memory.deAlloc 1
 pop temp 0
@@ -61,7 +50,7 @@ push argument 2
 pop this 1
 push constant 0
 return
-function Int32.add 5
+function Int32.add 4
 push argument 0
 pop pointer 0
 push this 0
@@ -71,43 +60,33 @@ add
 pop this 0
 push argument 1
 call Int32.getLower 1
-pop local 1
-push this 1
-push local 1
-add
 pop local 0
-push this 1
-push constant 32767
-push constant 1
-add
+push local 0
+push static 2
 and
 pop local 2
-push local 1
-push constant 32767
-push constant 1
+push this 1
+push static 2
+and
+pop local 1
+push this 1
+push local 0
 add
+pop this 1
+push this 1
+push static 2
 and
 pop local 3
-push local 0
-push constant 32767
-push constant 1
-add
-and
-pop local 4
+push local 1
 push local 2
+and
 push constant 0
+lt
+push local 1
+push local 2
 eq
 not
 push local 3
-push constant 0
-eq
-not
-and
-push local 2
-push local 3
-eq
-not
-push local 4
 push constant 0
 eq
 and
@@ -120,98 +99,75 @@ push constant 1
 add
 pop this 0
 label IF_FALSE0
-push local 0
-pop this 1
 push constant 0
 return
-function Int32.subtract 2
+function Int32.double 0
 push argument 0
 pop pointer 0
-push argument 1
-call Int32.getUpper 1
-pop local 0
-push argument 1
-call Int32.getLower 1
-pop local 1
-push this 2
+push this 0
+push this 0
+add
+pop this 0
+push this 1
+push static 2
+and
 push constant 0
-eq
+lt
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push local 0
-not
-push local 1
-not
-call Int32.new 2
-pop this 2
-goto IF_END0
+push this 0
+push constant 1
+add
+pop this 0
 label IF_FALSE0
-push this 2
-push local 0
-not
-push local 1
-not
-call Int32.set 3
-pop temp 0
-label IF_END0
-push this 3
-push constant 0
-eq
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push constant 0
-push constant 1
-call Int32.new 2
-pop this 3
-goto IF_END1
-label IF_FALSE1
-push this 3
-push constant 0
-push constant 1
-call Int32.set 3
-pop temp 0
-label IF_END1
-push this 2
-push this 3
-call Int32.add 2
-pop temp 0
-push pointer 0
-push this 2
-call Int32.add 2
-pop temp 0
+push this 1
+push this 1
+add
+pop this 1
 push constant 0
 return
 function Int32.negate 0
 push argument 0
 pop pointer 0
-push this 2
+push this 0
+not
+pop this 0
+push this 1
 push constant 0
 eq
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push constant 0
+push this 0
 push constant 1
-call Int32.new 2
-pop this 2
+add
+pop this 0
 goto IF_END0
 label IF_FALSE0
-push this 2
-push constant 0
-push constant 1
-call Int32.set 3
-pop temp 0
-label IF_END0
-push this 0
-not
-pop this 0
 push this 1
 not
+push constant 1
+add
 pop this 1
+label IF_END0
+push constant 0
+return
+function Int32.subtract 0
+push argument 0
+pop pointer 0
+push static 0
+push argument 1
+call Int32.getUpper 1
+push argument 1
+call Int32.getLower 1
+call Int32.set 3
+pop temp 0
+push static 0
+call Int32.negate 1
+pop temp 0
 push pointer 0
-push this 2
+push static 0
 call Int32.add 2
 pop temp 0
 push constant 0
@@ -226,8 +182,7 @@ gt
 not
 if-goto WHILE_END0
 push pointer 0
-push pointer 0
-call Int32.add 2
+call Int32.double 1
 pop temp 0
 push argument 1
 push constant 1
@@ -290,66 +245,51 @@ call Output.println 0
 pop temp 0
 push constant 0
 return
-function Int32.multiplyInt 2
+function Int32.multiplyInt 1
 push argument 0
 pop pointer 0
-push constant 16
-pop local 0
 push constant 1
-pop local 1
-push this 2
-push constant 0
-eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push this 0
-push this 1
-call Int32.new 2
-pop this 2
-goto IF_END0
-label IF_FALSE0
-push this 2
+pop local 0
+push static 0
 push this 0
 push this 1
 call Int32.set 3
 pop temp 0
-label IF_END0
 push constant 0
 pop this 0
 push constant 0
 pop this 1
 label WHILE_EXP0
-push local 0
+push argument 1
 push constant 0
-gt
+eq
+not
 not
 if-goto WHILE_END0
-push local 1
+push local 0
 push argument 1
 and
 push constant 0
 eq
 not
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push pointer 0
-push this 2
+push static 0
 call Int32.add 2
 pop temp 0
-label IF_FALSE1
-push this 2
-push constant 1
-call Int32.shiftLeft 2
-pop temp 0
-push local 1
-push local 1
-add
-pop local 1
+push argument 1
 push local 0
-push constant 1
 sub
+pop argument 1
+label IF_FALSE0
+push static 0
+call Int32.double 1
+pop temp 0
+push local 0
+push local 0
+add
 pop local 0
 goto WHILE_EXP0
 label WHILE_END0
@@ -376,42 +316,16 @@ push argument 0
 pop pointer 0
 push constant 32
 pop local 0
-push this 2
-push constant 0
-eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push this 0
-push this 1
-call Int32.new 2
-pop this 2
-goto IF_END0
-label IF_FALSE0
-push this 2
+push static 0
 push this 0
 push this 1
 call Int32.set 3
 pop temp 0
-label IF_END0
-push this 3
-push constant 0
-eq
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push constant 0
-push constant 1
-call Int32.new 2
-pop this 3
-goto IF_END1
-label IF_FALSE1
-push this 3
+push static 1
 push constant 0
 push constant 1
 call Int32.set 3
 pop temp 0
-label IF_END1
 push constant 0
 pop this 0
 push constant 0
@@ -422,24 +336,22 @@ push constant 0
 gt
 not
 if-goto WHILE_END0
-push this 3
+push static 1
 push argument 1
 call Int32.testAnd 2
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push pointer 0
-push this 2
+push static 0
 call Int32.add 2
 pop temp 0
-label IF_FALSE2
-push this 2
-push constant 1
-call Int32.shiftLeft 2
+label IF_FALSE0
+push static 0
+call Int32.double 1
 pop temp 0
-push this 3
-push constant 1
-call Int32.shiftLeft 2
+push static 1
+call Int32.double 1
 pop temp 0
 push local 0
 push constant 1
@@ -458,25 +370,12 @@ call Math.divide 2
 push constant 2
 call Math.multiply 2
 pop local 0
-push this 3
-push constant 0
-eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push constant 0
-push this 0
-call Int32.new 2
-pop this 3
-goto IF_END0
-label IF_FALSE0
-push this 3
+push static 1
 push constant 0
 push this 0
 call Int32.set 3
 pop temp 0
-label IF_END0
-push this 3
+push static 1
 push local 0
 call Int32.multiplyInt 2
 pop temp 0
@@ -491,7 +390,7 @@ pop this 1
 push constant 0
 pop this 0
 push pointer 0
-push this 3
+push static 1
 call Int32.add 2
 pop temp 0
 push constant 0

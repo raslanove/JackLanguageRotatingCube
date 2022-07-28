@@ -1,4 +1,6 @@
-function Main.main 5
+function Main.main 11
+call Int32.initialize 0
+pop temp 0
 call MathF.initialize 0
 pop temp 0
 push constant 0
@@ -21,15 +23,114 @@ push constant 0
 pop local 4
 label WHILE_EXP0
 push local 4
-push constant 360
+push constant 18000
 lt
 not
 if-goto WHILE_END0
 push local 4
+pop local 5
+label WHILE_EXP1
+push local 5
+push constant 359
+gt
+not
+if-goto WHILE_END1
+push local 5
+push constant 360
+sub
+pop local 5
+goto WHILE_EXP1
+label WHILE_END1
+push local 5
+pop local 6
+label WHILE_EXP2
+push local 6
+push constant 89
+gt
+not
+if-goto WHILE_END2
+push local 6
+push constant 90
+sub
+pop local 6
+goto WHILE_EXP2
+label WHILE_END2
+push local 5
+push constant 269
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 90
+push local 6
+sub
+pop local 7
+push constant 90
+push local 6
+sub
+pop local 8
+push constant 0
+pop local 9
+push constant 0
+not
+pop local 10
+goto IF_END0
+label IF_FALSE0
+push local 5
+push constant 179
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 6
+pop local 7
+push local 6
+pop local 8
+push constant 0
+not
+pop local 9
+push constant 0
+not
+pop local 10
+goto IF_END1
+label IF_FALSE1
+push local 5
+push constant 89
+gt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 90
+push local 6
+sub
+pop local 7
+push constant 90
+push local 6
+sub
+pop local 8
+push constant 0
+not
+pop local 9
+push constant 0
+pop local 10
+goto IF_END2
+label IF_FALSE2
+push local 6
+pop local 7
+push local 6
+pop local 8
+push constant 0
+pop local 9
+push constant 0
+pop local 10
+label IF_END2
+label IF_END1
+label IF_END0
+push local 7
 push local 2
 call MathF.cos 2
 pop temp 0
-push local 4
+push local 8
 push local 3
 call MathF.sin 2
 pop temp 0
@@ -40,7 +141,8 @@ call Int32.set 3
 pop temp 0
 push local 0
 push local 2
-call Int32.multiply 2
+call Int32.getLower 1
+call Int32.multiplyInt 2
 pop temp 0
 push local 1
 push constant 0
@@ -49,8 +151,25 @@ call Int32.set 3
 pop temp 0
 push local 1
 push local 3
-call Int32.multiply 2
+call Int32.getLower 1
+call Int32.multiplyInt 2
 pop temp 0
+push local 9
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push local 0
+call Int32.negate 1
+pop temp 0
+label IF_FALSE3
+push local 10
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push local 1
+call Int32.negate 1
+pop temp 0
+label IF_FALSE4
 push constant 0
 not
 call Screen.setColor 1
