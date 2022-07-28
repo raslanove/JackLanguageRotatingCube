@@ -1,22 +1,88 @@
-function Main.main 2
-push constant 1
+function Main.main 5
+call MathF.initialize 0
+pop temp 0
+push constant 0
 push constant 0
 call Int32.new 2
 pop local 0
 push constant 0
-push constant 1
+push constant 0
 call Int32.new 2
 pop local 1
+push constant 0
+push constant 0
+call Int32.new 2
+pop local 2
+push constant 0
+push constant 0
+call Int32.new 2
+pop local 3
+push constant 0
+pop local 4
+label WHILE_EXP0
+push local 4
+push constant 360
+lt
+not
+if-goto WHILE_END0
+push local 4
+push local 2
+call MathF.cos 2
+pop temp 0
+push local 4
+push local 3
+call MathF.sin 2
+pop temp 0
 push local 0
+push constant 0
+push constant 127
+call Int32.set 3
+pop temp 0
+push local 0
+push local 2
+call Int32.multiply 2
+pop temp 0
 push local 1
-call Int32.subtract 2
+push constant 0
+push constant 127
+call Int32.set 3
 pop temp 0
-call Output.println 0
+push local 1
+push local 3
+call Int32.multiply 2
 pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 255
+push constant 127
+push constant 255
 push local 0
-call Int32.print 1
+call Int32.getUpper 1
+add
+push constant 127
+push local 1
+call Int32.getUpper 1
+add
+call Screen.drawLine 4
 pop temp 0
+push local 4
+push constant 1
+add
+pop local 4
+goto WHILE_EXP0
+label WHILE_END0
 push local 0
+call Int32.dispose 1
+pop temp 0
+push local 1
+call Int32.dispose 1
+pop temp 0
+push local 2
+call Int32.dispose 1
+pop temp 0
+push local 3
 call Int32.dispose 1
 pop temp 0
 push constant 0

@@ -1,0 +1,133 @@
+class MathF {
+
+    static Array sinLookupTable;
+
+    function void initialize() {
+        let sinLookupTable = Array.new(91);
+        let sinLookupTable[0] = 0;
+        let sinLookupTable[1] = 1143;
+        let sinLookupTable[2] = 2287;
+        let sinLookupTable[3] = 3429;
+        let sinLookupTable[4] = 4571;
+        let sinLookupTable[5] = 5711;
+        let sinLookupTable[6] = 6850;
+        let sinLookupTable[7] = 7986;
+        let sinLookupTable[8] = 9120;
+        let sinLookupTable[9] = 10252;
+        let sinLookupTable[10] = 11380;
+        let sinLookupTable[11] = 12504;
+        let sinLookupTable[12] = 13625;
+        let sinLookupTable[13] = 14742;
+        let sinLookupTable[14] = 15854;
+        let sinLookupTable[15] = 16961;
+        let sinLookupTable[16] = 18064;
+        let sinLookupTable[17] = 19160;
+        let sinLookupTable[18] = 20251;
+        let sinLookupTable[19] = 21336;
+        let sinLookupTable[20] = 22414;
+        let sinLookupTable[21] = 23486;
+        let sinLookupTable[22] = 24550;
+        let sinLookupTable[23] = 25606;
+        let sinLookupTable[24] = 26655;
+        let sinLookupTable[25] = 27696;
+        let sinLookupTable[26] = 28729;
+        let sinLookupTable[27] = 29752;
+        let sinLookupTable[28] = 30767;
+        let sinLookupTable[29] = 31772;
+        let sinLookupTable[30] = 32767 + 1;
+        let sinLookupTable[31] = -31783;
+        let sinLookupTable[32] = -30808;
+        let sinLookupTable[33] = -29843;
+        let sinLookupTable[34] = -28889;
+        let sinLookupTable[35] = -27947;
+        let sinLookupTable[36] = -27015;
+        let sinLookupTable[37] = -26096;
+        let sinLookupTable[38] = -25189;
+        let sinLookupTable[39] = -24293;
+        let sinLookupTable[40] = -23411;
+        let sinLookupTable[41] = -22541;
+        let sinLookupTable[42] = -21684;
+        let sinLookupTable[43] = -20841;
+        let sinLookupTable[44] = -20011;
+        let sinLookupTable[45] = -19196;
+        let sinLookupTable[46] = -18394;
+        let sinLookupTable[47] = -17606;
+        let sinLookupTable[48] = -16834;
+        let sinLookupTable[49] = -16076;
+        let sinLookupTable[50] = -15333;
+        let sinLookupTable[51] = -14605;
+        let sinLookupTable[52] = -13893;
+        let sinLookupTable[53] = -13197;
+        let sinLookupTable[54] = -12517;
+        let sinLookupTable[55] = -11853;
+        let sinLookupTable[56] = -11205;
+        let sinLookupTable[57] = -10573;
+        let sinLookupTable[58] = -9959;
+        let sinLookupTable[59] = -9361;
+        let sinLookupTable[60] = -8781;
+        let sinLookupTable[61] = -8217;
+        let sinLookupTable[62] = -7672;
+        let sinLookupTable[63] = -7143;
+        let sinLookupTable[64] = -6633;
+        let sinLookupTable[65] = -6141;
+        let sinLookupTable[66] = -5666;
+        let sinLookupTable[67] = -5210;
+        let sinLookupTable[68] = -4773;
+        let sinLookupTable[69] = -4353;
+        let sinLookupTable[70] = -3953;
+        let sinLookupTable[71] = -3571;
+        let sinLookupTable[72] = -3208;
+        let sinLookupTable[73] = -2864;
+        let sinLookupTable[74] = -2539;
+        let sinLookupTable[75] = -2234;
+        let sinLookupTable[76] = -1947;
+        let sinLookupTable[77] = -1680;
+        let sinLookupTable[78] = -1433;
+        let sinLookupTable[79] = -1205;
+        let sinLookupTable[80] = -996;
+        let sinLookupTable[81] = -807;
+        let sinLookupTable[82] = -638;
+        let sinLookupTable[83] = -489;
+        let sinLookupTable[84] = -360;
+        let sinLookupTable[85] = -250;
+        let sinLookupTable[86] = -160;
+        let sinLookupTable[87] = -90;
+        let sinLookupTable[88] = -40;
+        let sinLookupTable[89] = -10;
+        let sinLookupTable[90] = -1;
+        return;
+    }
+    
+    function void sin(int angleDegrees, Int32 outValue) {
+        while (angleDegrees > 359) {
+            let angleDegrees = angleDegrees - 360;
+        }
+        while (angleDegrees < 0) {
+            let angleDegrees = angleDegrees + 360;
+        }
+ 
+
+        if (angleDegrees > 269) {
+            do outValue.set(0, sinLookupTable[360 - angleDegrees]);
+            do outValue.negate();
+        } else { 
+            if (angleDegrees > 179) {
+                do outValue.set(0, sinLookupTable[angleDegrees-180]);
+                do outValue.negate();                
+            } else {
+                if (angleDegrees > 89) {
+                    do outValue.set(0, sinLookupTable[180-angleDegrees]);
+                } else {
+                    do outValue.set(0, sinLookupTable[angleDegrees]);                
+                }
+            }
+        }
+        
+        return;
+    }
+    
+    function void cos(int angleDegrees, Int32 outValue) {
+        do MathF.sin(angleDegrees+90, outValue);
+        return;
+    } 
+}

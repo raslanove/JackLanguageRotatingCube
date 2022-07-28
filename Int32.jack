@@ -75,6 +75,19 @@ class Int32 {
         do add(temp1);
         return;
     }
+    
+    method void negate() {
+        if (temp1=0) {
+            let temp1 = Int32.new(0, 1);
+        } else {
+            do temp1.set(0, 1);
+        }
+        
+        let upper = ~upper;
+        let lower = ~lower;
+        do add(temp1);
+        return;
+    }
         
     method void shiftLeft(int amount) {
         while (amount > 0) {
@@ -93,7 +106,7 @@ class Int32 {
         return;
     }
     
-    method void multiply(int multiplier) {
+    method void multiplyInt(int multiplier) {
         var int count, shiftMask;
         let count=16;
         let shiftMask=1;
@@ -118,6 +131,40 @@ class Int32 {
         return;
     }
     
+    method boolean testAnd(Int32 value) {
+        return ~(((upper & value.getUpper()) | (lower & value.getLower())) = 0);
+    }
+
+    method void multiply(Int32 multiplier) {
+        var int count;
+        let count=32;
+    
+        if (temp1=0) {
+            let temp1 = Int32.new(upper, lower);
+        } else {
+            do temp1.set(upper, lower);
+        }
+        
+        if (temp2=0) {
+            let temp2 = Int32.new(0, 1);
+        } else {
+            do temp2.set(0, 1);
+        }
+
+        let upper=0;
+        let lower=0;
+        while (count>0) {
+            if (temp2.testAnd(multiplier)) {
+                do add(temp1);
+            }
+            do temp1.shiftLeft(1);
+            do temp2.shiftLeft(1);
+            let count = count - 1;
+        }
+         
+        return;
+    }
+   
     method void divide(int divisor) {
         var int reciprocal;
         let reciprocal = (32767 / divisor) * 2;
@@ -128,9 +175,9 @@ class Int32 {
             do temp2.set(0, upper);
         }
         
-        do temp2.multiply(reciprocal);
+        do temp2.multiplyInt(reciprocal);
         let upper = 0;
-        do multiply(reciprocal);
+        do multiplyInt(reciprocal);
         let lower = upper;
         let upper = 0;
         do add(temp2);        

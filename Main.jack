@@ -1,22 +1,50 @@
 class Main {
     function void main() {
-        var Int32 val1, val2;
-        let val1 = Int32.new(1, 0);
-        let val2 = Int32.new(0, 1);
-        do val1.subtract(val2);
+        var Int32 rotatingPointX, rotatingPointY, cosAngle, sinAngle;
+        var int angle;
         
-        do Output.println();        
-        do val1.print();
-        do val1.dispose();
-        do val2.dispose();
+        do MathF.initialize();
+        let rotatingPointX = Int32.new(0, 0);
+        let rotatingPointY = Int32.new(0, 0);
+        let cosAngle = Int32.new(0, 0);
+        let sinAngle = Int32.new(0, 0);
+        let angle = 0;
 
+        //do MathF.cos(0, val1);
+        
+        //do Output.println();        
+        //do val1.print();
+
+        while (angle < 360) {
+            do MathF.cos(angle, cosAngle);
+            do MathF.sin(angle, sinAngle);
+            
+            // x*cos(Angle) - y*sin(Angle)
+            do rotatingPointX.set(0, 127);
+            do rotatingPointX.multiply(cosAngle);
+            //do rotatingPointX.multiplyInt(cosAngle.getLower());
+            
+            // y*cos(Angle) + x*sin(Angle)
+            do rotatingPointY.set(0, 127);
+            do rotatingPointY.multiply(sinAngle);
+            //do rotatingPointY.multiplyInt(sinAngle.getLower());
+        
+            do Screen.setColor(true);
+            do Screen.drawLine(255, 127, 255+rotatingPointX.getUpper(), 127+rotatingPointY.getUpper());
+
+            let angle = angle + 1;
+        }
+        
+        do rotatingPointX.dispose();
+        do rotatingPointY.dispose();
+        do cosAngle.dispose();
+        do sinAngle.dispose();
+        
         //let memory = 0;
         //let memory[16384] = -256;
         //let memory[16385] = -256;
         //let memory[16386] = -256;
         
-        //do Screen.setColor(true);
-        //do Screen.drawLine(0, 0, 511, 251);
         return;
     }
 }
