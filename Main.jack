@@ -1,0 +1,22 @@
+class Main {
+    function void main() {
+        var Int32 val1, val2;
+        let val1 = Int32.new(1, 0);
+        let val2 = Int32.new(0, 1);
+        do val1.subtract(val2);
+        
+        do Output.println();        
+        do val1.print();
+        do val1.dispose();
+        do val2.dispose();
+
+        //let memory = 0;
+        //let memory[16384] = -256;
+        //let memory[16385] = -256;
+        //let memory[16386] = -256;
+        
+        //do Screen.setColor(true);
+        //do Screen.drawLine(0, 0, 511, 251);
+        return;
+    }
+}

@@ -1,0 +1,141 @@
+class Int32 {
+    
+    field int upper, lower;
+    field Int32 temp1, temp2;
+
+    constructor Int32 new(int upperWord, int lowerWord) {
+        let upper = upperWord;
+        let lower = lowerWord;
+        let temp1 = 0;
+        let temp2 = 0;
+        return this;
+    }
+   
+    method void dispose() {
+        if (~(temp1=0)) {
+            do temp1.dispose();
+        }
+        if (~(temp2=0)) {
+            do temp2.dispose();
+        }
+
+        do Memory.deAlloc(this);
+        return;
+    }
+ 
+    method int getUpper() { return upper; }
+    method int getLower() { return lower; }
+   
+    method void set(int upperWord, int lowerWord) {
+        let upper = upperWord;
+        let lower = lowerWord;
+        return;
+    }
+   
+    method void add(Int32 value) {
+        var int lowerSum, valueLower;
+        var int lowerSign, valueLowerSign, sumSign;
+
+        let upper = upper + value.getUpper();
+         
+        let valueLower = value.getLower();
+        let lowerSum = lower + valueLower;
+
+        let      lowerSign =      lower & (32767 + 1);
+        let valueLowerSign = valueLower & (32767 + 1);
+        let        sumSign =   lowerSum & (32767 + 1);
+        
+        if (
+            ((~(lowerSign = 0)) & (~(valueLowerSign = 0))) |
+            ((~(lowerSign = valueLowerSign)) & (sumSign = 0))) {
+            let upper = upper + 1;
+        } 
+        let lower = lowerSum;
+        return;
+    }
+
+    method void subtract(Int32 value) {    
+        var int valueUpper, valueLower;
+        let valueUpper = value.getUpper();
+        let valueLower = value.getLower();
+        
+        if (temp1=0) {
+            let temp1 = Int32.new(~valueUpper, ~valueLower);
+        } else {
+            do temp1.set(~valueUpper, ~valueLower);
+        }
+
+        if (temp2=0) {
+            let temp2 = Int32.new(0, 1);
+        } else {
+            do temp2.set(0, 1);
+        }
+
+        do temp1.add(temp2);        
+        do add(temp1);
+        return;
+    }
+        
+    method void shiftLeft(int amount) {
+        while (amount > 0) {
+            do add(this);
+            let amount = amount - 1;
+        }
+        return;
+    }
+        
+    method void print() {
+        do Output.printString("upper: ");
+        do Output.printInt(upper);
+        do Output.printString(", lower: ");
+        do Output.printInt(lower);
+        do Output.println();
+        return;
+    }
+    
+    method void multiply(int multiplier) {
+        var int count, shiftMask;
+        let count=16;
+        let shiftMask=1;
+    
+        if (temp1=0) {
+            let temp1 = Int32.new(upper, lower);
+        } else {
+            do temp1.set(upper, lower);
+        }
+        
+        let upper=0;
+        let lower=0;
+        while (count>0) {
+            if (~((shiftMask & multiplier) = 0)) {
+                do add(temp1);
+            }
+            do temp1.shiftLeft(1);
+            let shiftMask = shiftMask + shiftMask;
+            let count = count - 1;
+        }
+         
+        return;
+    }
+    
+    method void divide(int divisor) {
+        var int reciprocal;
+        let reciprocal = (32767 / divisor) * 2;
+        
+        if (temp2=0) {
+            let temp2 = Int32.new(0, upper);
+        } else {
+            do temp2.set(0, upper);
+        }
+        
+        do temp2.multiply(reciprocal);
+        let upper = 0;
+        do multiply(reciprocal);
+        let lower = upper;
+        let upper = 0;
+        do add(temp2);        
+        
+        return;
+    }
+}
+

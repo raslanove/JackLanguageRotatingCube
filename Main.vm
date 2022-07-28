@@ -1,0 +1,23 @@
+function Main.main 2
+push constant 1
+push constant 0
+call Int32.new 2
+pop local 0
+push constant 0
+push constant 1
+call Int32.new 2
+pop local 1
+push local 0
+push local 1
+call Int32.subtract 2
+pop temp 0
+call Output.println 0
+pop temp 0
+push local 0
+call Int32.print 1
+pop temp 0
+push local 0
+call Int32.dispose 1
+pop temp 0
+push constant 0
+return
