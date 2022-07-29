@@ -8,9 +8,13 @@ push constant 0
 call Int32.new 2
 pop static 1
 push constant 0
+push constant 0
+call Int32.new 2
+pop static 2
+push constant 0
 return
 function Point3D.new 0
-push constant 8
+push constant 9
 call Memory.alloc 1
 pop pointer 0
 push argument 0
@@ -23,6 +27,8 @@ push argument 0
 pop this 6
 push argument 1
 pop this 7
+push argument 2
+pop this 8
 push argument 0
 push constant 0
 call Int32.new 2
@@ -80,6 +86,9 @@ pop this 6
 push this 4
 call Int32.getUpper 1
 pop this 7
+push this 5
+call Int32.getUpper 1
+pop this 8
 push constant 0
 return
 function Point3D.getX 0
@@ -100,7 +109,22 @@ pop pointer 0
 push this 5
 call Int32.getUpper 1
 return
-function Point3D.yaw 6
+function Point3D.getOldX 0
+push argument 0
+pop pointer 0
+push this 6
+return
+function Point3D.getOldY 0
+push argument 0
+pop pointer 0
+push this 7
+return
+function Point3D.getOldZ 0
+push argument 0
+pop pointer 0
+push this 8
+return
+function Point3D.yaw 7
 push argument 0
 pop pointer 0
 label WHILE_EXP0
@@ -211,6 +235,9 @@ pop temp 0
 push this 3
 call Int32.getUpper 1
 pop local 5
+push this 4
+call Int32.getUpper 1
+pop local 6
 push this 3
 push constant 0
 push local 5
@@ -223,13 +250,41 @@ call Int32.multiplyInt 2
 pop temp 0
 push this 4
 push constant 0
-push local 5
+push local 6
 call Int32.set 3
 pop temp 0
 push this 4
 push static 1
 call Int32.getLower 1
 call Int32.multiplyInt 2
+pop temp 0
+push this 3
+push this 4
+call Int32.subtract 2
+pop temp 0
+push this 4
+push constant 0
+push local 6
+call Int32.set 3
+pop temp 0
+push this 4
+push static 0
+call Int32.getLower 1
+call Int32.multiplyInt 2
+pop temp 0
+push static 2
+push constant 0
+push local 5
+call Int32.set 3
+pop temp 0
+push static 2
+push static 1
+call Int32.getLower 1
+call Int32.multiplyInt 2
+pop temp 0
+push this 4
+push static 2
+call Int32.add 2
 pop temp 0
 push local 3
 if-goto IF_TRUE3
