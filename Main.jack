@@ -21,15 +21,11 @@ class Main {
         let point = Point3D.new(127, 0, 0);
         
         let angle = 0;
-        while (angle < 18000) {
+        while (angle < 3600) {
         
             do cube.resetToInitial();
             do cube.yaw(angle);
                    
-            //do Screen.setColor(false);
-            //do Screen.drawLine(255, 127, 255+oldPointX, 127+oldPointY);
-            //do Screen.drawLine(255, 127, 255+point.getX(), 127+point.getY());
-
             do Screen.setColor(false);
             do cube.draw(false);
             do Screen.setColor(true);
@@ -40,8 +36,6 @@ class Main {
             let angle = angle + 1;
         }
         
-        //do rotatingPointX.dispose();
- 
         do cube.dispose();       
         //let memory = 0;
         //let memory[16384] = -256;

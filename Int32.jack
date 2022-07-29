@@ -34,21 +34,13 @@ class Int32 {
    
     method void upperToLowerWithSignExtend() {
         let lower = upper;
-        if ((upper & wordMSB) < 0) {
-            let upper = -1;
-        } else {
-            let upper = 0;
-        }
+        let upper = (lower & wordMSB) < 0; // Exploiting the fact the true = -1, false = 0
         return ;
     }
     
     method void setLowerWithSignExtend(int newLower) {
         let lower = newLower;
-        if ((newLower & wordMSB) < 0) {
-            let upper = -1;
-        } else {
-            let upper = 0;
-        }
+        let upper = (lower & wordMSB) < 0;
         return ;
     }
    
@@ -65,29 +57,19 @@ class Int32 {
         let lower = lower + valueLower;
         let        sumSign =      lower & wordMSB;
         
-        if ((lowerSign & valueLowerSign < 0) |
-            ((~(lowerSign = valueLowerSign)) & (sumSign = 0))) {
-            let upper = upper + 1;
-        } 
+        let upper = upper - ((lowerSign & valueLowerSign < 0) | ((~(lowerSign = valueLowerSign)) & (sumSign = 0)));
         return;
     }
     
     method void double() {
-        let upper = upper + upper;
-        if ((lower & wordMSB) < 0) {
-            let upper = upper + 1;
-        }
+        let upper = upper + upper - ((lower & wordMSB) < 0);
         let lower = lower + lower;
         return;
     }
 
     method void negate() {
-        let upper = ~upper;
-        if (lower = 0) {
-            let upper = upper + 1;
-        } else {
-            let lower = (~lower) + 1;
-        }
+        let upper = (~upper) - (lower = 0);
+        let lower = (~lower) + 1;
         return;
     }
 
