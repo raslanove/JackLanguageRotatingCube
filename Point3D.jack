@@ -1,0 +1,108 @@
+class Point3D {
+
+    field int initialX, initialY, initialZ;
+    field Int32 x, y, z;
+    field int oldX, oldY;
+
+    static Int32 cosAngle, sinAngle;
+    
+    function void initialize() {
+        let cosAngle = Int32.new(0, 0);
+        let sinAngle = Int32.new(0, 0);
+        return;
+    }    
+    
+    constructor Point3D new(int startingX, int startingY, int startingZ) {
+        let initialX = startingX;
+        let initialY = startingY;
+        let initialZ = startingZ;
+        let oldX = startingX;
+        let oldY = startingY;
+        let x = Int32.new(startingX, 0);
+        let y = Int32.new(startingY, 0);
+        let z = Int32.new(startingZ, 0);
+        return this;
+    }
+ 
+    method void dispose() {
+        do x.dispose();
+        do y.dispose();
+        do z.dispose();
+        return;
+    }
+    
+    method void resetToInitial() {
+        do x.set(initialX, 0);
+        do y.set(initialY, 0);
+        do z.set(initialZ, 0);
+        return;
+    }
+
+    method void backUpCoordinates() {
+        let oldX = x.getUpper();
+        let oldY = y.getUpper();
+        return;
+    }
+    
+    method int getX() { return x.getUpper(); }
+    method int getY() { return y.getUpper(); }
+    method int getZ() { return z.getUpper(); }
+    
+    method void yaw(int angleDegrees) {
+        var int basicAngle, xAngle, yAngle;
+        var boolean negateX, negateY;
+        var int tempX;
+               
+        while (angleDegrees > 359) {
+            let angleDegrees = angleDegrees - 360;
+        }
+            
+        let basicAngle = angleDegrees;
+        while (basicAngle > 89) {
+            let basicAngle = basicAngle - 90;
+        }
+
+        if (angleDegrees > 269) {
+            let xAngle = 90 - basicAngle;
+            let yAngle = 90 - basicAngle;
+            let negateX = false;
+            let negateY = true;                
+        } else { 
+            if (angleDegrees > 179) {
+                let xAngle = basicAngle;
+                let yAngle = basicAngle;
+                let negateX = true;
+                let negateY = true;                
+            } else {
+                if (angleDegrees > 89) {                        
+                    let xAngle = 90 - basicAngle;
+                    let yAngle = 90 - basicAngle;
+                    let negateX = true;
+                    let negateY = false;
+                } else {
+                    let xAngle = basicAngle;
+                    let yAngle = basicAngle;
+                    let negateX = false;
+                    let negateY = false;                        
+                }                    
+            }
+        }
+
+        do MathF.cos(xAngle, cosAngle);
+        do MathF.sin(yAngle, sinAngle);
+           
+        // x*cos(Angle) - y*sin(Angle)
+        let tempX = x.getUpper();
+        do x.set(0, tempX);
+        do x.multiplyInt(cosAngle.getLower());
+        
+        // y*cos(Angle) + x*sin(Angle)
+        do y.set(0, tempX);
+        do y.multiplyInt(sinAngle.getLower());
+
+        if (negateX) { do x.negate(); }
+        if (negateY) { do y.negate(); }
+        
+        return;
+    }
+}
