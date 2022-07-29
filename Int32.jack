@@ -32,6 +32,26 @@ class Int32 {
         return;
     }
    
+    method void upperToLowerWithSignExtend() {
+        let lower = upper;
+        if ((upper & wordMSB) < 0) {
+            let upper = -1;
+        } else {
+            let upper = 0;
+        }
+        return ;
+    }
+    
+    method void setLowerWithSignExtend(int newLower) {
+        let lower = newLower;
+        if ((newLower & wordMSB) < 0) {
+            let upper = -1;
+        } else {
+            let upper = 0;
+        }
+        return ;
+    }
+   
     method void add(Int32 value) {
         var int valueLower;
         var int lowerSign, valueLowerSign, sumSign;
@@ -143,6 +163,8 @@ class Int32 {
     method void divide(int divisor) {
         var int reciprocal;
         let reciprocal = (32767 / divisor) * 2;
+
+        // TODO: Use upperToLowerWithSignExtend...
 
         // temp1 is used in multiplyInt(),
         do temp2.set(0, upper);

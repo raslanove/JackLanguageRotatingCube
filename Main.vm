@@ -1,51 +1,63 @@
-function Main.main 2
+function Main.main 3
 call Int32.initialize 0
 pop temp 0
 call MathF.initialize 0
 pop temp 0
 call Point3D.initialize 0
 pop temp 0
+push constant 110
+push constant 255
+push constant 127
+push constant 0
+call Cube.new 4
+pop local 0
 push constant 127
 push constant 0
 push constant 0
 call Point3D.new 3
-pop local 1
+pop local 2
 push constant 0
-pop local 0
+pop local 1
 label WHILE_EXP0
-push local 0
+push local 1
 push constant 18000
 lt
 not
 if-goto WHILE_END0
-push local 1
-call Point3D.resetToInitial 1
-pop temp 0
-push local 1
 push local 0
-call Point3D.yaw 2
+call Cube.resetToInitial 1
+pop temp 0
+push local 0
+push local 1
+call Cube.yaw 2
+pop temp 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push local 0
+push constant 0
+call Cube.draw 2
 pop temp 0
 push constant 0
 not
 call Screen.setColor 1
 pop temp 0
-push constant 255
-push constant 127
-push constant 255
-push local 1
-call Point3D.getX 1
-add
-push constant 127
-push local 1
-call Point3D.getY 1
-add
-call Screen.drawLine 4
+push local 0
+push constant 0
+not
+call Cube.draw 2
 pop temp 0
 push local 0
+call Cube.saveTransformation 1
+pop temp 0
+push local 1
 push constant 1
 add
-pop local 0
+pop local 1
 goto WHILE_EXP0
 label WHILE_END0
+push local 0
+call Cube.dispose 1
+pop temp 0
 push constant 0
 return

@@ -55,6 +55,9 @@ pop temp 0
 push this 5
 call Int32.dispose 1
 pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
 push constant 0
 return
 function Point3D.resetToInitial 0
@@ -124,7 +127,64 @@ push argument 0
 pop pointer 0
 push this 8
 return
-function Point3D.yaw 7
+function Point3D.yaw 2
+push argument 0
+pop pointer 0
+push argument 1
+push static 0
+call MathF.cos 2
+pop temp 0
+push argument 1
+push static 1
+call MathF.sin 2
+pop temp 0
+push this 3
+call Int32.getUpper 1
+pop local 0
+push this 4
+call Int32.getUpper 1
+pop local 1
+push this 3
+call Int32.upperToLowerWithSignExtend 1
+pop temp 0
+push this 3
+push static 0
+call Int32.multiply 2
+pop temp 0
+push this 4
+call Int32.upperToLowerWithSignExtend 1
+pop temp 0
+push this 4
+push static 1
+call Int32.multiply 2
+pop temp 0
+push this 3
+push this 4
+call Int32.subtract 2
+pop temp 0
+push this 4
+push local 1
+call Int32.setLowerWithSignExtend 2
+pop temp 0
+push this 4
+push static 0
+call Int32.multiply 2
+pop temp 0
+push static 2
+push local 0
+call Int32.setLowerWithSignExtend 2
+pop temp 0
+push static 2
+push static 1
+call Int32.multiply 2
+pop temp 0
+push this 4
+push static 2
+call Int32.add 2
+pop temp 0
+push constant 0
+return
+function Point3D.yawFast 9
 push argument 0
 pop pointer 0
 label WHILE_EXP0
@@ -139,20 +199,32 @@ sub
 pop argument 1
 goto WHILE_EXP0
 label WHILE_END0
+label WHILE_EXP1
+push argument 1
+push constant 0
+lt
+not
+if-goto WHILE_END1
+push argument 1
+push constant 360
+add
+pop argument 1
+goto WHILE_EXP1
+label WHILE_END1
 push argument 1
 pop local 0
-label WHILE_EXP1
+label WHILE_EXP2
 push local 0
 push constant 89
 gt
 not
-if-goto WHILE_END1
+if-goto WHILE_END2
 push local 0
 push constant 90
 sub
 pop local 0
-goto WHILE_EXP1
-label WHILE_END1
+goto WHILE_EXP2
+label WHILE_END2
 push argument 1
 push constant 269
 gt
@@ -232,6 +304,12 @@ push local 2
 push static 1
 call MathF.sin 2
 pop temp 0
+push static 0
+call Int32.getLower 1
+pop local 7
+push static 1
+call Int32.getLower 1
+pop local 8
 push this 3
 call Int32.getUpper 1
 pop local 5
@@ -239,23 +317,17 @@ push this 4
 call Int32.getUpper 1
 pop local 6
 push this 3
-push constant 0
-push local 5
-call Int32.set 3
+call Int32.upperToLowerWithSignExtend 1
 pop temp 0
 push this 3
-push static 0
-call Int32.getLower 1
+push local 7
 call Int32.multiplyInt 2
 pop temp 0
 push this 4
-push constant 0
-push local 6
-call Int32.set 3
+call Int32.upperToLowerWithSignExtend 1
 pop temp 0
 push this 4
-push static 1
-call Int32.getLower 1
+push local 8
 call Int32.multiplyInt 2
 pop temp 0
 push this 3
@@ -263,23 +335,19 @@ push this 4
 call Int32.subtract 2
 pop temp 0
 push this 4
-push constant 0
 push local 6
-call Int32.set 3
+call Int32.setLowerWithSignExtend 2
 pop temp 0
 push this 4
-push static 0
-call Int32.getLower 1
+push local 7
 call Int32.multiplyInt 2
 pop temp 0
 push static 2
-push constant 0
 push local 5
-call Int32.set 3
+call Int32.setLowerWithSignExtend 2
 pop temp 0
 push static 2
-push static 1
-call Int32.getLower 1
+push local 8
 call Int32.multiplyInt 2
 pop temp 0
 push this 4

@@ -30,6 +30,7 @@ class Point3D {
         do x.dispose();
         do y.dispose();
         do z.dispose();
+        do Memory.deAlloc(this);
         return;
     }
     
@@ -56,14 +57,44 @@ class Point3D {
     method int getOldX() { return oldX; }
     method int getOldY() { return oldY; }
     method int getOldZ() { return oldZ; }
-    
+
+
     method void yaw(int angleDegrees) {
+        var int tempX, tempY;
+               
+        do MathF.cos(angleDegrees, cosAngle);
+        do MathF.sin(angleDegrees, sinAngle);
+
+        let tempX = x.getUpper();
+        let tempY = y.getUpper();
+           
+        // x*cos(Angle) - y*sin(Angle)
+        do x.upperToLowerWithSignExtend();
+        do x.multiply(cosAngle);
+        do y.upperToLowerWithSignExtend();
+        do y.multiply(sinAngle);
+        do x.subtract(y);
+        
+        // y*cos(Angle) + x*sin(Angle)
+        do y.setLowerWithSignExtend(tempY);
+        do y.multiply(cosAngle);
+        do tempInt32.setLowerWithSignExtend(tempX);
+        do tempInt32.multiply(sinAngle);
+        do y.add(tempInt32);
+
+        return;
+    }
+    
+    method void yawFast(int angleDegrees) {
         var int basicAngle, xAngle, yAngle;
         var boolean negateX, negateY;
-        var int tempX, tempY;
+        var int tempX, tempY, cosLower, sinLower;
                
         while (angleDegrees > 359) {
             let angleDegrees = angleDegrees - 360;
+        }
+        while (angleDegrees < 0) {
+            let angleDegrees = angleDegrees + 360;
         }
             
         let basicAngle = angleDegrees;
@@ -99,22 +130,24 @@ class Point3D {
 
         do MathF.cos(xAngle, cosAngle);
         do MathF.sin(yAngle, sinAngle);
+        let cosLower = cosAngle.getLower();
+        let sinLower = sinAngle.getLower();
 
         let tempX = x.getUpper();
         let tempY = y.getUpper();
            
         // x*cos(Angle) - y*sin(Angle)
-        do x.set(0, tempX);
-        do x.multiplyInt(cosAngle.getLower());
-        do y.set(0, tempY);
-        do y.multiplyInt(sinAngle.getLower());
+        do x.upperToLowerWithSignExtend();
+        do x.multiplyInt(cosLower);
+        do y.upperToLowerWithSignExtend();
+        do y.multiplyInt(sinLower);
         do x.subtract(y);
         
         // y*cos(Angle) + x*sin(Angle)
-        do y.set(0, tempY);
-        do y.multiplyInt(cosAngle.getLower());
-        do tempInt32.set(0, tempX);
-        do tempInt32.multiplyInt(sinAngle.getLower());
+        do y.setLowerWithSignExtend(tempY);
+        do y.multiplyInt(cosLower);
+        do tempInt32.setLowerWithSignExtend(tempX);
+        do tempInt32.multiplyInt(sinLower);
         do y.add(tempInt32);
 
         if (negateX) { do x.negate(); }
