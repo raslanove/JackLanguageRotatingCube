@@ -3,16 +3,12 @@ push constant 2
 call Memory.alloc 1
 pop pointer 0
 push argument 0
-pop this 0
-push argument 1
 pop this 1
+push argument 1
+pop this 0
 push pointer 0
 return
 function Int32.initialize 0
-push constant 32767
-push constant 1
-add
-pop static 2
 push constant 0
 push constant 0
 call Int32.new 2
@@ -34,76 +30,78 @@ return
 function Int32.getUpper 0
 push argument 0
 pop pointer 0
-push this 0
+push this 1
 return
 function Int32.getLower 0
 push argument 0
 pop pointer 0
-push this 1
+push this 0
 return
 function Int32.set 0
 push argument 0
 pop pointer 0
 push argument 1
-pop this 0
-push argument 2
 pop this 1
+push argument 2
+pop this 0
 push constant 0
 return
 function Int32.upperToLowerWithSignExtend 0
 push argument 0
 pop pointer 0
-push this 0
-pop this 1
 push this 1
-push static 2
-and
+pop this 0
+push this 0
 push constant 0
 lt
-pop this 0
+pop this 1
 push constant 0
 return
 function Int32.setLowerWithSignExtend 0
 push argument 0
 pop pointer 0
 push argument 1
-pop this 1
-push this 1
-push static 2
-and
+pop this 0
+push this 0
 push constant 0
 lt
-pop this 0
+pop this 1
 push constant 0
 return
 function Int32.add 4
 push argument 0
 pop pointer 0
-push this 0
+push this 1
+push constant 1
 push argument 1
-call Int32.getUpper 1
 add
-pop this 0
-push argument 1
-call Int32.getLower 1
-pop local 0
-push local 0
-push static 2
-and
-pop local 2
-push this 1
-push static 2
-and
-pop local 1
-push this 1
-push local 0
+pop pointer 1
+push that 0
 add
 pop this 1
-push this 1
-push static 2
-and
-pop local 3
+push constant 0
+push argument 1
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+push constant 0
+lt
+pop local 2
 push this 0
+push constant 0
+lt
+pop local 1
+push this 0
+push local 0
+add
+pop this 0
+push this 0
+push constant 0
+lt
+pop local 3
+push this 1
 push local 1
 push local 2
 and
@@ -119,58 +117,82 @@ eq
 and
 or
 sub
-pop this 0
+pop this 1
 push constant 0
 return
 function Int32.double 0
 push argument 0
 pop pointer 0
-push this 0
-push this 0
-add
 push this 1
-push static 2
-and
+push this 1
+add
+push this 0
 push constant 0
 lt
 sub
-pop this 0
-push this 1
-push this 1
-add
 pop this 1
+push this 0
+push this 0
+add
+pop this 0
 push constant 0
 return
 function Int32.negate 0
 push argument 0
 pop pointer 0
-push this 0
-not
 push this 1
+not
+push this 0
 push constant 0
 eq
 sub
-pop this 0
-push this 1
+pop this 1
+push this 0
 not
 push constant 1
 add
-pop this 1
+pop this 0
 push constant 0
 return
 function Int32.subtract 0
 push argument 0
 pop pointer 0
+push constant 1
 push static 0
+add
+push constant 1
 push argument 1
-call Int32.getUpper 1
+add
+pop pointer 1
+push that 0
+not
+push constant 0
 push argument 1
-call Int32.getLower 1
-call Int32.set 3
+add
+pop pointer 1
+push that 0
+push constant 0
+eq
+sub
 pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
 push static 0
-call Int32.negate 1
+add
+push constant 0
+push argument 1
+add
+pop pointer 1
+push that 0
+not
+push constant 1
+add
 pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
 push pointer 0
 push static 0
 call Int32.add 2
@@ -218,7 +240,7 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-push this 0
+push this 1
 call Output.printInt 1
 pop temp 0
 push constant 9
@@ -243,7 +265,7 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-push this 1
+push this 0
 call Output.printInt 1
 pop temp 0
 call Output.println 0
@@ -256,14 +278,14 @@ pop pointer 0
 push constant 1
 pop local 0
 push static 0
-push this 0
 push this 1
+push this 0
 call Int32.set 3
 pop temp 0
 push constant 0
-pop this 0
-push constant 0
 pop this 1
+push constant 0
+pop this 0
 label WHILE_EXP0
 push argument 1
 push constant 0
@@ -303,13 +325,19 @@ return
 function Int32.testAnd 0
 push argument 0
 pop pointer 0
-push this 0
-push argument 1
-call Int32.getUpper 1
-and
 push this 1
+push constant 1
 push argument 1
-call Int32.getLower 1
+add
+pop pointer 1
+push that 0
+and
+push this 0
+push constant 0
+push argument 1
+add
+pop pointer 1
+push that 0
 and
 or
 push constant 0
@@ -322,8 +350,8 @@ pop pointer 0
 push constant 32
 pop local 0
 push static 0
-push this 0
 push this 1
+push this 0
 call Int32.set 3
 pop temp 0
 push static 1
@@ -332,9 +360,9 @@ push constant 1
 call Int32.set 3
 pop temp 0
 push constant 0
-pop this 0
-push constant 0
 pop this 1
+push constant 0
+pop this 0
 label WHILE_EXP0
 push local 0
 push constant 0
@@ -377,7 +405,7 @@ call Math.multiply 2
 pop local 0
 push static 1
 push constant 0
-push this 0
+push this 1
 call Int32.set 3
 pop temp 0
 push static 1
@@ -385,15 +413,15 @@ push local 0
 call Int32.multiplyInt 2
 pop temp 0
 push constant 0
-pop this 0
+pop this 1
 push pointer 0
 push local 0
 call Int32.multiplyInt 2
 pop temp 0
-push this 0
-pop this 1
-push constant 0
+push this 1
 pop this 0
+push constant 0
+pop this 1
 push pointer 0
 push static 1
 call Int32.add 2

@@ -7,8 +7,8 @@ class Point3D {
     static Int32 cosAngle, sinAngle, tempInt32;
     
     function void initialize() {
-        let cosAngle = Int32.new(0, 0);
-        let sinAngle = Int32.new(0, 0);
+        let cosAngle  = Int32.new(0, 0);
+        let sinAngle  = Int32.new(0, 0);
         let tempInt32 = Int32.new(0, 0);
         return;
     }    
@@ -88,6 +88,9 @@ class Point3D {
     
     method void yawFast(int angleDegrees) {
         var int tempX, tempY, cosLower, sinLower;
+               
+        // Faster because it uses Int32.multiplyInt() instead of Int32.multiply(), but
+        // this way we lose the sign. We have to compensate.
                
         do MathF.cos(angleDegrees, cosAngle);
         do MathF.sin(angleDegrees, sinAngle);

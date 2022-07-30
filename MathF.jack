@@ -3,6 +3,8 @@ class MathF {
     static Array sinLookupTable;
 
     function void initialize() {
+    
+        // I could have used only 45 degrees and deducted everything else from them, but whatever!
         let sinLookupTable = Array.new(91);
         let sinLookupTable[0] = 0;
         let sinLookupTable[1] = 1143;

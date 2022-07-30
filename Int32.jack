@@ -1,9 +1,8 @@
 class Int32 {
     
-    field int upper, lower;
+    field int lower, upper;
     
     static Int32 temp1, temp2;
-    static int wordMSB;
 
     constructor Int32 new(int upperWord, int lowerWord) {
         let upper = upperWord;
@@ -12,7 +11,6 @@ class Int32 {
     }
 
     function void initialize() {
-        let wordMSB = 32767 + 1;
         let temp1 = Int32.new(0, 0);
         let temp2 = Int32.new(0, 0);
         return ;
@@ -34,13 +32,13 @@ class Int32 {
    
     method void upperToLowerWithSignExtend() {
         let lower = upper;
-        let upper = (lower & wordMSB) < 0; // Exploiting the fact the true = -1, false = 0
+        let upper = lower < 0; // Exploiting the fact the true = -1, false = 0
         return ;
     }
     
     method void setLowerWithSignExtend(int newLower) {
         let lower = newLower;
-        let upper = (lower & wordMSB) < 0;
+        let upper = lower < 0;
         return ;
     }
    
@@ -48,21 +46,21 @@ class Int32 {
         var int valueLower;
         var int lowerSign, valueLowerSign, sumSign;
 
-        let upper = upper + value.getUpper();
+        let upper = upper + value[1];
 
-        let valueLower = value.getLower();
-        let valueLowerSign = valueLower & wordMSB;
-        let      lowerSign =      lower & wordMSB;
+        let valueLower = value[0];
+        let valueLowerSign = valueLower < 0;
+        let      lowerSign =      lower < 0;
        
         let lower = lower + valueLower;
-        let        sumSign =      lower & wordMSB;
+        let        sumSign =      lower < 0;
         
         let upper = upper - ((lowerSign & valueLowerSign < 0) | ((~(lowerSign = valueLowerSign)) & (sumSign = 0)));
         return;
     }
     
     method void double() {
-        let upper = upper + upper - ((lower & wordMSB) < 0);
+        let upper = upper + upper - (lower < 0);
         let lower = lower + lower;
         return;
     }
@@ -74,8 +72,8 @@ class Int32 {
     }
 
     method void subtract(Int32 value) {    
-        do temp1.set(value.getUpper(), value.getLower());
-        do temp1.negate();
+        let temp1[1] = (~value[1]) - (value[0] = 0);
+        let temp1[0] = (~value[0]) + 1;
         do add(temp1);
         return;
     }
@@ -118,7 +116,7 @@ class Int32 {
     }
     
     method boolean testAnd(Int32 value) {
-        return ~(((upper & value.getUpper()) | (lower & value.getLower())) = 0);
+        return ~(((upper & value[1]) | (lower & value[0])) = 0);
     }
 
     method void multiply(Int32 multiplier) {
@@ -146,7 +144,7 @@ class Int32 {
         var int reciprocal;
         let reciprocal = (32767 / divisor) * 2;
 
-        // TODO: Use upperToLowerWithSignExtend...
+        // TODO: Handle signed division...
 
         // temp1 is used in multiplyInt(),
         do temp2.set(0, upper);
