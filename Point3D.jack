@@ -175,4 +175,29 @@ class Point3D {
 
         return;
     }
+    
+    method void rotate(int angleDegrees, int axis) {
+        var Int32 temp1, temp2;
+        if (axis=0) {
+            // Yaw,
+            do yawFast(angleDegrees);
+        } else {
+            let temp1 = x;
+            let temp2 = y;
+            if (axis=1) {
+                // Pitch,
+                let y = x;
+                let x = z;
+                do yawFast(angleDegrees);
+            } else {
+                // Roll,
+                let x = y;
+                let y = z;                
+                do yawFast(angleDegrees);
+            }
+            let x = temp1;
+            let y = temp2;            
+        }
+        return;
+    }    
 }

@@ -1,4 +1,4 @@
-function Main.main 3
+function Main.main 5
 call Int32.initialize 0
 pop temp 0
 call MathF.initialize 0
@@ -11,25 +11,47 @@ push constant 127
 push constant 0
 call Cube.new 4
 pop local 0
-push constant 127
 push constant 0
 push constant 0
-call Point3D.new 3
-pop local 2
-push constant 0
+call Int32.new 2
 pop local 1
+push constant 0
+push constant 0
+call Int32.new 2
+pop local 2
+push constant 2
+push constant 0
+call Int32.new 2
+pop local 3
+push constant 1
+push constant 12240
+call Int32.new 2
+pop local 4
 label WHILE_EXP0
-push local 1
-push constant 3600
-lt
+push constant 0
+not
 not
 if-goto WHILE_END0
 push local 0
 call Cube.resetToInitial 1
 pop temp 0
 push local 0
+push constant 1
 push local 1
-call Cube.yaw 2
+add
+pop pointer 1
+push that 0
+push constant 0
+call Cube.rotate 3
+pop temp 0
+push local 0
+push constant 1
+push local 2
+add
+pop pointer 1
+push that 0
+push constant 1
+call Cube.rotate 3
 pop temp 0
 push constant 0
 call Screen.setColor 1
@@ -51,11 +73,27 @@ push local 0
 call Cube.saveTransformation 1
 pop temp 0
 push local 1
-push constant 1
-add
-pop local 1
+push local 3
+call Int32.add 2
+pop temp 0
+push local 2
+push local 4
+call Int32.add 2
+pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
+push local 1
+call Int32.dispose 1
+pop temp 0
+push local 2
+call Int32.dispose 1
+pop temp 0
+push local 3
+call Int32.dispose 1
+pop temp 0
+push local 4
+call Int32.dispose 1
+pop temp 0
 push local 0
 call Cube.dispose 1
 pop temp 0

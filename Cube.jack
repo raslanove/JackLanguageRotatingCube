@@ -58,11 +58,11 @@ class Cube {
         return ;
     }
 
-    method void yaw(int angle) {
+    method void rotate(int angle, int axis) {
         var Point3D currentPoint; var int i; let i = 0;
         while (i < 8) {
             let currentPoint = points[i];
-            do currentPoint.yawFast(angle);
+            do currentPoint.rotate(angle, axis);
             let i = i + 1;
         }
         return ;

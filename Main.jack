@@ -10,21 +10,24 @@
 class Main {
     function void main() {
         var Cube cube;
-        var int angle;
-        var Point3D point;
-
-        do Int32.initialize();
-        do MathF.initialize();
+        var Int32 yawAngle    , pitchAngle    ;
+        var Int32 yawAngleStep, pitchAngleStep;
+        
+        do Int32  .initialize();
+        do MathF  .initialize();
         do Point3D.initialize();
         
         let cube = Cube.new(110, 255, 127, 0);
-        let point = Point3D.new(127, 0, 0);
-        
-        let angle = 0;
-        while (angle < 3600) {
+        let   yawAngle = Int32.new(0, 0);
+        let pitchAngle = Int32.new(0, 0);
+        let   yawAngleStep = Int32.new(2, 0);
+        let pitchAngleStep = Int32.new(1, 12240);
+                
+        while (true) {
         
             do cube.resetToInitial();
-            do cube.yaw(angle);
+            do cube.rotate(  yawAngle[1], 0);
+            do cube.rotate(pitchAngle[1], 1);
                    
             do Screen.setColor(false);
             do cube.draw(false);
@@ -33,15 +36,17 @@ class Main {
 
             do cube.saveTransformation();
 
-            let angle = angle + 1;
+            do   yawAngle.add(  yawAngleStep);
+            do pitchAngle.add(pitchAngleStep);
         }
-        
+ 
+        // Unreachable code, but whatever,
+        do   yawAngle    .dispose();
+        do pitchAngle    .dispose();
+        do   yawAngleStep.dispose();
+        do pitchAngleStep.dispose();
         do cube.dispose();       
-        //let memory = 0;
-        //let memory[16384] = -256;
-        //let memory[16385] = -256;
-        //let memory[16386] = -256;
-        
+       
         return;
     }
 }
