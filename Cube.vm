@@ -85,8 +85,6 @@ return
 function Cube.resetToInitial 2
 push argument 0
 pop pointer 0
-push constant 0
-pop local 1
 label WHILE_EXP0
 push local 1
 push constant 8
@@ -113,8 +111,6 @@ return
 function Cube.saveTransformation 2
 push argument 0
 pop pointer 0
-push constant 0
-pop local 1
 label WHILE_EXP0
 push local 1
 push constant 8
@@ -141,8 +137,6 @@ return
 function Cube.rotate 2
 push argument 0
 pop pointer 0
-push constant 0
-pop local 1
 label WHILE_EXP0
 push local 1
 push constant 8

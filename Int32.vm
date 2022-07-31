@@ -1,13 +1,3 @@
-function Int32.new 0
-push constant 2
-call Memory.alloc 1
-pop pointer 0
-push argument 0
-pop this 1
-push argument 1
-pop this 0
-push pointer 0
-return
 function Int32.initialize 0
 push constant 0
 push constant 0
@@ -18,6 +8,16 @@ push constant 0
 call Int32.new 2
 pop static 1
 push constant 0
+return
+function Int32.new 0
+push constant 2
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 1
+push argument 1
+pop this 0
+push pointer 0
 return
 function Int32.dispose 0
 push argument 0
@@ -105,8 +105,6 @@ push this 1
 push local 1
 push local 2
 and
-push constant 0
-lt
 push local 1
 push local 2
 eq
@@ -219,6 +217,33 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
+function Int32.shiftRight 0
+push argument 0
+pop pointer 0
+push constant 0
+return
+function Int32.testAnd 0
+push argument 0
+pop pointer 0
+push this 1
+push constant 1
+push argument 1
+add
+pop pointer 1
+push that 0
+and
+push this 0
+push constant 0
+push argument 1
+add
+pop pointer 1
+push that 0
+and
+or
+push constant 0
+eq
+not
+return
 function Int32.print 0
 push argument 0
 pop pointer 0
@@ -293,8 +318,8 @@ eq
 not
 not
 if-goto WHILE_END0
-push local 0
 push argument 1
+push local 0
 and
 push constant 0
 eq
@@ -322,28 +347,6 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
-function Int32.testAnd 0
-push argument 0
-pop pointer 0
-push this 1
-push constant 1
-push argument 1
-add
-pop pointer 1
-push that 0
-and
-push this 0
-push constant 0
-push argument 1
-add
-pop pointer 1
-push that 0
-and
-or
-push constant 0
-eq
-not
-return
 function Int32.multiply 1
 push argument 0
 pop pointer 0
@@ -369,8 +372,8 @@ push constant 0
 gt
 not
 if-goto WHILE_END0
-push static 1
 push argument 1
+push static 1
 call Int32.testAnd 2
 if-goto IF_TRUE0
 goto IF_FALSE0

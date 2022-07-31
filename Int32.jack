@@ -1,21 +1,36 @@
+// 
+// Jack language doesn't support 32bit integers. This class implements this
+// functionality. It can also be used as a fixed-point number, where the point
+// lies between the upper and lower words.
+//
+// By Omar El Sayyed.
+// The 28th of July, 2022.
+//
+
 class Int32 {
     
-    field int lower, upper;
+    field int lower;  // Lower word. The fraction part if used as a fixed-point
+                      // floating point number.
+    field int upper;  // Upper word. The integer part if used as a fixed-point
+                      // floating point number.
     
-    static Int32 temp1, temp2;
+    static Int32 temp1, temp2; // Temporaries used in various methods. Static to
+                               // avoid having to allocated them for each 
+                               // instance.
+
+    // Initializes statics.
+    function void initialize() {
+        let temp1 = Int32.new(0, 0);
+        let temp2 = Int32.new(0, 0);
+        return ;
+    }
 
     constructor Int32 new(int upperWord, int lowerWord) {
         let upper = upperWord;
         let lower = lowerWord;        
         return this;
     }
-
-    function void initialize() {
-        let temp1 = Int32.new(0, 0);
-        let temp2 = Int32.new(0, 0);
-        return ;
-    }
-   
+  
     method void dispose() {
         do Memory.deAlloc(this);
         return;
@@ -29,55 +44,81 @@ class Int32 {
         let lower = lowerWord;
         return;
     }
-   
+
+    // Moves the upper word to the lower word, and replaces the new upper word
+    // with the sign extension.   
     method void upperToLowerWithSignExtend() {
         let lower = upper;
         let upper = lower < 0; // Exploiting the fact the true = -1, false = 0
         return ;
     }
     
+    // Sets the lower word, and replaces the upper word with the sign extension.   
     method void setLowerWithSignExtend(int newLower) {
         let lower = newLower;
         let upper = lower < 0;
         return ;
     }
    
+    // Adds the provided value to this instance.
     method void add(Int32 value) {
         var int valueLower;
         var int lowerSign, valueLowerSign, sumSign;
 
+        // Adds the upper word to the upper word,
+        //      the lower word to the lower word,
+        // If adding the lowers overflows (carry), increments the result upper.
+        
+        // Add uppers,
         let upper = upper + value[1];
 
+        // Detect lowers overflow,
         let valueLower = value[0];
         let valueLowerSign = valueLower < 0;
         let      lowerSign =      lower < 0;
        
+        // Add lowers,
         let lower = lower + valueLower;
         let        sumSign =      lower < 0;
         
-        let upper = upper - ((lowerSign & valueLowerSign < 0) | ((~(lowerSign = valueLowerSign)) & (sumSign = 0)));
+        // Lowers would overflow only if:
+        //  - Both lowers are negative.
+        //  - The lowers have different signs, but the sum is positive.
+        let upper = upper -  // Note that subtracting true is adding 1.
+                ((lowerSign & valueLowerSign) | 
+                ((~(lowerSign = valueLowerSign)) & (sumSign = 0)));
         return;
     }
     
+    // Exploiting the fact that adding a number to itself is much easier than
+    // adding two arbitrary numbers.
     method void double() {
+    
+        // Lower would overflow only if it's negative,
         let upper = upper + upper - (lower < 0);
         let lower = lower + lower;
         return;
     }
 
+    // Two's complement.
     method void negate() {
+    
+        // Not followed by adding 1. The lower would overflow only if it was
+        // initially 0.
         let upper = (~upper) - (lower = 0);
         let lower = (~lower) + 1;
         return;
     }
 
+    // Negate then add.
     method void subtract(Int32 value) {    
         let temp1[1] = (~value[1]) - (value[0] = 0);
         let temp1[0] = (~value[0]) + 1;
         do add(temp1);
         return;
     }
-        
+    
+    // Repeated doubling.
     method void shiftLeft(int amount) {
         while (amount > 0) {
             do double();
@@ -85,7 +126,22 @@ class Int32 {
         }
         return;
     }
+    
+    method void shiftRight(int amount) {
+        // A shift is a simple copy of the bits from one word to another, 
+        // displacing them either left or right.
+        // Check: https://stackoverflow.com/a/21707607/1942069
         
+        // Never used it, thus, not going to implement it :D
+        return;
+    }
+
+    // Ands with this, true if non-zero.
+    method boolean testAnd(Int32 value) {
+        return ~(((upper & value[1]) | (lower & value[0])) = 0);
+    }
+    
+    // Prints the upper and lower words as signed numbers (sorry).
     method void print() {
         do Output.printString("upper: ");
         do Output.printInt(upper);
@@ -95,65 +151,114 @@ class Int32 {
         return;
     }
     
+    // Multiplies 32bits by 16bits, resulting in a 32bit result stored in this.
     method void multiplyInt(int multiplier) {
-        var int shiftMask;
-        let shiftMask=1;
+        var int testMask;
+        let testMask=1;
     
+        // Shift, test (and), add, repeat.
+        
+        // To hold the shifted value of this,
         do temp1.set(upper, lower);
         
+        // Reset this to accumulate the result in it,
         let upper=0;
         let lower=0;
+        
+        // Loop as long the the muliplier still have some bits set,
         while (~(multiplier=0)) {
-            if (~((shiftMask & multiplier) = 0)) {
+            
+            // If the multiplier has this bit set,
+            if (~((multiplier & testMask) = 0)) {
+            
+                // Add the shifted original value of this,
                 do add(temp1);
-                let multiplier = multiplier - shiftMask;
+                
+                // Reset this bit in the multiplier. If we hit a zero, we
+                // needn't proceed.
+                let multiplier = multiplier - testMask;
             }
+            
+            // Shift the original value of this,
             do temp1.double();
-            let shiftMask = shiftMask + shiftMask;
+            
+            // Shift the mask to test the next bit.
+            let testMask = testMask + testMask;
         }
          
         return;
     }
-    
-    method boolean testAnd(Int32 value) {
-        return ~(((upper & value[1]) | (lower & value[0])) = 0);
-    }
 
+    // Multiplies 32bits by 32bits, resulting in a 64bit result, of which the
+    // lower 32bits are stored in this.
     method void multiply(Int32 multiplier) {
         var int count;
-        let count=32;
+        let count=32;   // Removing ones from the multiplier is an expensive
+                        // process, so we just test the entire 32 bits.
+
+        // Shift, test (and), add, repeat.
     
+        // To hold the shifted value of this,
         do temp1.set(upper, lower);
+        
+        // To hold the test mask,
         do temp2.set(0, 1);
 
+        // Reset this to accumulate the result in it,
         let upper=0;
         let lower=0;
         while (count>0) {
-            if (temp2.testAnd(multiplier)) {
+ 
+            // If the multiplier has this bit set,
+            if (multiplier.testAnd(temp2)) {
+                // Add the shifted original value of this,
                 do add(temp1);
             }
+            // Shift the original value of this,
             do temp1.double();
+
+            // Shift the mask to test the next bit.            
             do temp2.double();
             let count = count - 1;
         }
          
         return;
     }
-   
+
+    // Divides 32bits by 16bits, resulting in a 16bit result stored in the lower
+    // word of this. The upper word is reset.
     method void divide(int divisor) {
         var int reciprocal;
-        let reciprocal = (32767 / divisor) * 2;
 
         // TODO: Handle signed division...
-
-        // temp1 is used in multiplyInt(),
+        
+        // Get the reciprocal and multiply it. This way, we can use the system
+        // provided division which should be accelerated by the VM emulator.
+        
+        // The provided divide performs signed division. We avoid this by using
+        // only 15 bits for the reciprocal,
+        let reciprocal = (32767 / divisor) * 2; 
+                                                
+        // temp1 is used in multiplyInt(), which we'll be using. So, using temp2
+        // instead,
+        
+        // Move the upper word into the lower one,
         do temp2.set(0, upper);
+        
+        // Multiply with the reciprocal. The resulting upper word is the whole
+        // number while the lower one is the fraction,
         do temp2.multiplyInt(reciprocal);
+        
+        // Multiply the lower word with the reciprocal. The resulting upper word
+        // is the new fraction, the lower word will be discarded because we
+        // we don't have enough precision to keep it,
         let upper = 0;
-        do multiplyInt(reciprocal);
-        let lower = upper;
-        let upper = 0;
-        do add(temp2);        
+        do multiplyInt(reciprocal);        
+        let lower = upper;  // Move the new fraction to the lower word.
+        let upper = 0;      // Reset the upper word.
+        
+        // Add the upper word multiplication result and we are done,
+        do add(temp2);
         
         return;
     }

@@ -138,11 +138,17 @@ push argument 1
 push static 1
 call MathF.sin 2
 pop temp 0
+push constant 1
 push this 3
-call Int32.getUpper 1
+add
+pop pointer 1
+push that 0
 pop local 0
+push constant 1
 push this 4
-call Int32.getUpper 1
+add
+pop pointer 1
+push that 0
 pop local 1
 push this 3
 call Int32.upperToLowerWithSignExtend 1

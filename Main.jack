@@ -1,9 +1,9 @@
 // 
 // A Jack program, submitted to project #9 of the Nand to Tetris course.
 // By Omar El Sayyed.
-// The 29th of July, 2022.
+// The 28th of July, 2022.
 //
-// Tons of optimizations can still be applied, but doing this would sacrifice 
+// Tons of optimizations can still be applied, but doing this would sacrifice
 // readability. I heavily optimized the math functions, but performed only
 // basic optimizations on the application logic classes.
 
@@ -20,33 +20,64 @@ class Main {
         let cube = Cube.new(110, 255, 127, 0);
         let   yawAngle = Int32.new(0, 0);
         let pitchAngle = Int32.new(0, 0);
-        let   yawAngleStep = Int32.new(2, 0);
-        let pitchAngleStep = Int32.new(1, 12240);
+        
+        let   yawAngleStep = Int32.new(2, 0);     // 2 degrees.
+        let pitchAngleStep = Int32.new(1, 12240); // 1.186767578 degrees
+                                               // (12240 / 65536 = 0.186767578).
                 
         while (true) {
         
+            // To improve performance, we don't process to the fraction part of
+            // the coordinates. With every rotation, we discard the fraction. 
+            // Thus, errors accumulate. To avoid that, we reset the values with
+            // every iteration, and perform only two large rotations,
             do cube.resetToInitial();
-            do cube.rotate(  yawAngle[1], 0);
-            do cube.rotate(pitchAngle[1], 1);
+            do cube.rotate(  yawAngle[1], 0);   // Around z-axis (yaw).
+            do cube.rotate(pitchAngle[1], 1);   // Around y-axis (pitch).
                    
+            // The VM emulator refreshes the display from the display buffer
+            // periodically (moving the mouse seems to increase the refresh
+            // rate, please keep moving the mouse!). To decrease the flicker (or
+            // sometimes, have anything appear at all), we need to maximize the
+            // probability that our drawing is on the buffer when the refresh
+            // takes place. To do that, we don't clean the screen unless the
+            // next frame is ready to be drawn immediatly.
+            
+            // Clearing the screen is a long operation, so instead of resetting 
+            // the entire buffer, we redraw the last frame in white. To minimize
+            // the time between clearing the last frame and drawing the next, we
+            // don't clear the last frame after it was drawn immediately.
+            // Instead, we keep track of the state of the cube before the new
+            // transformation is applied, then perform the transformation (which
+            // is a lengthy process), then we redraw the old cube in white and
+            // immediately after that we draw the new cube.            
+            
+            // Clear the last screen by redrawing the last frame in white,
             do Screen.setColor(false);
-            do cube.draw(false);
+            do cube.draw(false);      // Draw using the old state.
+            
+            // Draw the transformed cube in black,
             do Screen.setColor(true);
             do cube.draw(true);
 
+            // Set this transformation as the old state,
             do cube.saveTransformation();
 
+            // Increment our angles,
             do   yawAngle.add(  yawAngleStep);
             do pitchAngle.add(pitchAngleStep);
         }
  
-        // Unreachable code, but whatever,
+        // Unreachable code, kept for reference (one should always clean up),
         do   yawAngle    .dispose();
         do pitchAngle    .dispose();
         do   yawAngleStep.dispose();
         do pitchAngleStep.dispose();
         do cube.dispose();       
-       
+        
+        // Should also de-initialize our statics. But the machine is halting
+        // anyway.
+        
         return;
     }
 }

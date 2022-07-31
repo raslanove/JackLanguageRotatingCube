@@ -1,10 +1,19 @@
+// 
+// The jack language system library doesn't provide sinusoidal functions.
+// We implement them as a look-up table.
+//
+// By Omar El Sayyed.
+// The 28th of July, 2022.
+//
+
 class MathF {
 
     static Array sinLookupTable;
 
     function void initialize() {
     
-        // I could have used only 45 degrees and deducted everything else from them, but whatever!
+        // I could have used only 45 degrees and deducted everything else, but 
+        // this works, so,
         let sinLookupTable = Array.new(91);
         let sinLookupTable[0] = 0;
         let sinLookupTable[1] = 1143;
@@ -36,7 +45,10 @@ class MathF {
         let sinLookupTable[27] = 29752;
         let sinLookupTable[28] = 30767;
         let sinLookupTable[29] = 31772;
-        let sinLookupTable[30] = 32767 + 1;
+        let sinLookupTable[30] = 32767 + 1; // Looks like a bug in the Jack 
+                                            // compiler. Can't write a -32768
+                                            // immediate, which is a perfect
+                                            // 16bit number.
         let sinLookupTable[31] = -31783;
         let sinLookupTable[32] = -30808;
         let sinLookupTable[33] = -29843;
@@ -101,13 +113,16 @@ class MathF {
     }
     
     function void sin(int angleDegrees, Int32 outValue) {
+    
+        // Force the angle into the [0, 359] range,
         while (angleDegrees > 359) {
             let angleDegrees = angleDegrees - 360;
         }
         while (angleDegrees < 0) {
             let angleDegrees = angleDegrees + 360;
-        } 
+        }
 
+        // Depending on the quadrant, deduce the value and the sign,
         if (angleDegrees < 90) {
             do outValue.set(0, sinLookupTable[angleDegrees]);
         } else {
@@ -128,6 +143,8 @@ class MathF {
     }
     
     function void cos(int angleDegrees, Int32 outValue) {
+    
+        // A cosine is a sine with a phase shift,
         do MathF.sin(angleDegrees+90, outValue);
         return;
     } 

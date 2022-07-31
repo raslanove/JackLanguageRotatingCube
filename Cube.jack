@@ -1,9 +1,17 @@
+// 
+// A cube. Can be transformed and drawn.
+//
+// By Omar El Sayyed.
+// The 29th of July, 2022.
+//
+
 class Cube {
 
-    field Array points;
-    field int x, y, z;
+    field Array points; // 8 points, the geometric representation of the cube.
+    field int x, y, z;  // Translation.
   
-    constructor Cube new(int sideLength, int positionX, int positionY, int positionZ) {
+    constructor Cube new(int sideLength,
+                         int positionX, int positionY, int positionZ) {
         var int i, j, k; // Iterators.
         var int iteratorsStartValue;
         var int currentPointIndex;
@@ -15,8 +23,9 @@ class Cube {
         let points = Array.new(8);
 
         // Initialize cube corners,
-        // To avoid emitting code for 8 method calls with 3 parameters each, let's do it
-        // as a loop. It's not faster, but it should save space (84 VM instructions vs 115).
+        // To avoid emitting code for 8 method calls with 3 parameters each,
+        // let's do it as a loop. It's not faster, but it should save space (84
+        // VM instructions vs 115). The rom space is scarce, so,
         let iteratorsStartValue = -(sideLength / 2);
 
         let currentPointIndex = 0;
@@ -38,8 +47,9 @@ class Cube {
         return this;
     }
     
+    // Restores the original coordinates prior to any transformation.
     method void resetToInitial() {
-        var Point3D currentPoint; var int i; let i = 0;
+        var Point3D currentPoint; var int i;
         while (i < 8) {
             let currentPoint = points[i];
             do currentPoint.resetToInitial();
@@ -48,8 +58,10 @@ class Cube {
         return ;
     }
     
+    // Saves the current state of the cube so it can be used later for
+    // clearing the screen.
     method void saveTransformation() {
-        var Point3D currentPoint; var int i; let i = 0;
+        var Point3D currentPoint; var int i;
         while (i < 8) {
             let currentPoint = points[i];
             do currentPoint.backUpCoordinates();
@@ -58,8 +70,12 @@ class Cube {
         return ;
     }
 
+    // Rotates the cube about its center.
+    //  axis: 0 = about z-axis (  yaw).
+    //        1 = about y-axis (pitch).
+    //        2 = about x-axis ( roll).
     method void rotate(int angle, int axis) {
-        var Point3D currentPoint; var int i; let i = 0;
+        var Point3D currentPoint; var int i;
         while (i < 8) {
             let currentPoint = points[i];
             do currentPoint.rotate(angle, axis);
@@ -80,14 +96,17 @@ class Cube {
         return;
     }
     
+    // Draws a line on the scren between the two specified points.
+    //  drawLatest: true  = draw from the current state of the cube.
+    //              false = draw from the past state of the cube.
     method void drawLine(int point1Index, int point2Index, boolean drawLatest) {
         var Point3D point1, point2;
         let point1 = points[point1Index];
         let point2 = points[point2Index];
         if (drawLatest) {
             do Screen.drawLine(
-                    x + point1.getX(), y + point1.getY(),
-                    x + point2.getX(), y + point2.getY());
+                    x + point1.getX   (), y + point1.getY   (),
+                    x + point2.getX   (), y + point2.getY   ());
         } else {
             do Screen.drawLine(
                     x + point1.getOldX(), y + point1.getOldY(),
@@ -95,7 +114,10 @@ class Cube {
         }
         return;
     }
-    
+ 
+    // Draws the entire cube to the screen.   
+    //  drawLatest: true  = draw from the current state of the cube.
+    //              false = draw from the past state of the cube.
     method void draw(boolean drawLatest) {
         // Front face,
         do drawLine(0, 1, drawLatest);

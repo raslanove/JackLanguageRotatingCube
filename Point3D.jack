@@ -1,11 +1,23 @@
+// 
+// A point that have 3-coordinates, and can be rotated about the origin.
+//
+// By Omar El Sayyed.
+// The 29th of July, 2022.
+//
+
 class Point3D {
 
-    field int initialX, initialY, initialZ;
-    field Int32 x, y, z;
-    field int oldX, oldY, oldZ;
+    field int initialX, initialY, initialZ; // Original coordinates before
+                                            // transformation.
+    field Int32 x, y, z;                    // Current transformed coordinates.
+    field int oldX, oldY, oldZ;             // Last saved state of the point.
 
-    static Int32 cosAngle, sinAngle, tempInt32;
+    static Int32 cosAngle, sinAngle, tempInt32; // Temporaries used while
+                                                // transforming. Static to avoid
+                                                // having to allocated them for
+                                                // each point.
     
+    // Initializes statics.
     function void initialize() {
         let cosAngle  = Int32.new(0, 0);
         let sinAngle  = Int32.new(0, 0);
@@ -33,9 +45,8 @@ class Point3D {
         do Memory.deAlloc(this);
         return;
     }
-    
-    // TODO: de-initialize....
-    
+     
+    // Restores the original coordinates prior to any transformation.        
     method void resetToInitial() {
         do x.set(initialX, 0);
         do y.set(initialY, 0);
@@ -43,6 +54,7 @@ class Point3D {
         return;
     }
 
+    // Saves the current coordinates of the point.
     method void backUpCoordinates() {
         let oldX = x.getUpper();
         let oldY = y.getUpper();
@@ -50,6 +62,9 @@ class Point3D {
         return;
     }
     
+    // Getters (I wish Jack language didn't force us to use these). They
+    // are heavy to call, and indexing the object as an array isn't 
+    // much cheaper.
     method int getX() { return x.getUpper(); }
     method int getY() { return y.getUpper(); }
     method int getZ() { return z.getUpper(); }
@@ -58,15 +73,20 @@ class Point3D {
     method int getOldY() { return oldY; }
     method int getOldZ() { return oldZ; }
 
-
+    // Rotates around the origin about the z-axis. Changes x and y values.
     method void yaw(int angleDegrees) {
         var int tempX, tempY;
                
         do MathF.cos(angleDegrees, cosAngle);
         do MathF.sin(angleDegrees, sinAngle);
 
-        let tempX = x.getUpper();
-        let tempY = y.getUpper();
+        let tempX = x[1]; // Instead of using the getters. Should be faster
+        let tempY = y[1]; // on an actual hack machine, but slower on the
+                          // VM emulator.
+           
+        // Formula for adding two angles:
+        //   Cos(a + b) = Cos(a) * Cos(b) - Sin(a) * Sin(b)
+        //   Sin(a + b) = Sin(a) * Cos(b) + Cos(a) * Sin(b)
            
         // x*cos(Angle) - y*sin(Angle)
         do x.upperToLowerWithSignExtend();
@@ -86,23 +106,31 @@ class Point3D {
         return;
     }
     
+    // 32bit x 32bit multiplication is a heavy operation. We achieve
+    // a 3-4 times better performance by using 32bit x 16bit multiplication.
+    // Fortunately, the Sin and Cos functions produce values in the range
+    // [-1, 1] only, so the upper word of the sinusoidal functions contains
+    // nothing but the sign extension. We can ignore it, but we have to
+    // detect and account for the sign on our own.
     method void yawFast(int angleDegrees) {
         var int tempX, tempY, cosLower, sinLower;
-               
-        // Faster because it uses Int32.multiplyInt() instead of Int32.multiply(), but
-        // this way we lose the sign. We have to compensate.
-               
+
         do MathF.cos(angleDegrees, cosAngle);
         do MathF.sin(angleDegrees, sinAngle);
 
+        // A backup of the x an y values,
         let tempX = x.getUpper();
         let tempY = y.getUpper();
-           
+
+        // Acount for the 4 cases,
         if (cosAngle.getUpper() = 0) {
+            // Cosine is positive,
             let cosLower = cosAngle.getLower();
 
             if (sinAngle.getUpper() = 0) {
+                // Sine is positive,
                 let sinLower = sinAngle.getLower();
+                
                 // x*cos(Angle) - y*sin(Angle)
                 do x.upperToLowerWithSignExtend();
                 do x.multiplyInt(cosLower);
@@ -117,8 +145,10 @@ class Point3D {
                 do tempInt32.multiplyInt(sinLower);
                 do y.add(tempInt32);
             } else {
+                // Sine is negative,
                 do sinAngle.negate();
                 let sinLower = sinAngle.getLower();
+                
                 // x*cos(Angle) - y*sin(Angle)
                 do x.upperToLowerWithSignExtend();
                 do x.multiplyInt(cosLower);
@@ -134,11 +164,14 @@ class Point3D {
                 do y.add(tempInt32);            
             }
         } else {
+            // Cosine is negative,
             do cosAngle.negate();
             let cosLower = cosAngle.getLower();
 
             if (sinAngle.getUpper() = 0) {
+                // Sine is positive,
                 let sinLower = sinAngle.getLower();
+                
                 // x*cos(Angle) - y*sin(Angle)
                 do x.upperToLowerWithSignExtend();
                 do x.multiplyInt(cosLower);
@@ -154,8 +187,10 @@ class Point3D {
                 do tempInt32.multiplyInt(sinLower);
                 do y.add(tempInt32);
             } else {
+                // Sine is negative,
                 do sinAngle.negate();
                 let sinLower = sinAngle.getLower();
+                
                 // x*cos(Angle) - y*sin(Angle)
                 do x.upperToLowerWithSignExtend();
                 do x.multiplyInt(cosLower);
@@ -176,14 +211,26 @@ class Point3D {
         return;
     }
     
+    // Rotates the point about the origin.
+    //  axis: 0 = about z-axis (  yaw).
+    //        1 = about y-axis (pitch).
+    //        2 = about x-axis ( roll).
     method void rotate(int angleDegrees, int axis) {
         var Int32 temp1, temp2;
+        
         if (axis=0) {
             // Yaw,
             do yawFast(angleDegrees);
         } else {
+        
+            // Perform rotation about the other axes by
+            // swapping them with the x and y axes.
+        
+            // Save the x and y objects.
             let temp1 = x;
             let temp2 = y;
+            
+            // Perform the rotation,
             if (axis=1) {
                 // Pitch,
                 let y = x;
@@ -195,6 +242,8 @@ class Point3D {
                 let y = z;                
                 do yawFast(angleDegrees);
             }
+            
+            // Restore the x and y objects,
             let x = temp1;
             let y = temp2;            
         }
